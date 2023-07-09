@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "bike_weite",
+    "django_vite",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "bike_weite/static/assets/bike_weite/"
+
+DJANGO_VITE_DEV_MODE = DEBUG
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
