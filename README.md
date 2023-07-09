@@ -1,46 +1,23 @@
-# bikeWeite-fe
+# bikeWeite
 
-This template should help get you started developing with Vue 3 in Vite.
+Welcome! This small app visualizes the region that you can reach within a
+certain distance that you define. You can use it to enter an address and see
+what you can reach by bike on an interactive map.
 
-## Recommended IDE Setup
+## How to run in development mode
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+To run it locally on your computer, you need to install npm and python
+dependencies, build and deploy the frontend, do the migrations and run the
+django development server. More specific instructions
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+1. install the npm dependencies via `npm install`
+2. build the frontend via `npm run build`
+3. install the python depencencies via
+   ```bash
+   pip install pipenv
+   pipenv install
+   ```
+4. do the database migrations via `pipenv run manage migrate`
+5. run the frontend development server via `npm run dev`
+6. open another terminal and run the django server via `pipenv run manage runserver`
+7. open the app at http://127.0.0.1:8000/
