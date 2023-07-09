@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+{% load django_vite %}
+
+<html lang="en">
+  <head>
+    {% vite_hmr_client %}
+  </head>
+  <body>
+    <div id="app"></div>
+    {% vite_asset 'src/main.ts' %}
+  </body>
+</html>

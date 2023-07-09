@@ -318,4 +318,5 @@ dist
 .pnp.*
 
 # build assets
-bike_weite/static/assets/bike_weite/
+bike_weite/static/
+staticfiles/

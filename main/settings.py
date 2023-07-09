@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#0^338r63n)7j_7#r7k75@#)9ry%l%kaekd0ozrubyb#4net3n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -45,6 +45,8 @@ DJANGO_VITE_ASSETS_PATH = BASE_DIR / "bike_weite/static/assets/bike_weite/"
 
 DJANGO_VITE_DEV_MODE = DEBUG
 
+ADMINS = [("Philipp Sommer", "philipp.sommer@hereon.de")]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -54,6 +56,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ROOT_URLCONF = 'main.urls'
 
@@ -124,6 +128,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

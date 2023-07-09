@@ -10,13 +10,23 @@ export default defineConfig({
   ],
   base: "/static/",
   build: {
-    outDir: "bike_weite/static/assets/bike_weite/",
+    outDir: "bike_weite/static/",
     manifest: true,
+    emptyOutDir: true,
     rollupOptions: {
       input: {
           "main.ts": '/src/main.ts'
         }
       }
+  },
+  server: {
+    host: 'localhost',
+    port: 3000,
+    open: false,
+    watch: {
+      usePolling: true,
+      disableGlobbing: false,
+    },
   },
   resolve: {
     alias: {
