@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-DJANGO_VITE_ASSETS_PATH = BASE_DIR / "bike_weite/static/assets/bike_weite/"
+DJANGO_VITE_ASSETS_PATH = BASE_DIR / "bike_weite/static/"
 
 DJANGO_VITE_DEV_MODE = DEBUG
 
