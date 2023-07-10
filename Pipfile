@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django-vite = "*"
+django = "==3.2"
+osmnx = "==1.5.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+manage = "python manage.py"
