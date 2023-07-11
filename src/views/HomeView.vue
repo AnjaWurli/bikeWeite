@@ -9,8 +9,8 @@ const x = ref('0')
 <template>
   <main class="main">
     <form class="form" method="get" action="http://127.0.0.1:8000/map/">
-      <label for="adress">Adress: {{ y }} </label>
-      <input type="text" name="adress" id="adress" v-model="y" />
+      <label for="address">Address: {{ y }} </label>
+      <input type="text" name="address" id="address" v-model="y" />
 
       <label for="distance">Distance: {{ x }} km</label>
       <input
@@ -44,7 +44,7 @@ const x = ref('0')
   color: var(--color-heading);
 }
 
-#adress {
+#address {
   appearance: none;
   border-radius: 2rem;
   padding: 0.5rem 1rem;
