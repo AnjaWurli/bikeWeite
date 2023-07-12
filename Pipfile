@@ -27,3 +27,6 @@ django-allauth = "*"
 
 [postgres]
 psycopg2-binary = "*"
+
+[deploy]
+gunicorn = "*"
