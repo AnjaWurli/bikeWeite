@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import ast
+import json
 from pathlib import Path
 from typing import List
 
@@ -34,12 +36,21 @@ SECRET_KEY = env(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", False)
+DEBUG = env.bool("DEBUG", True)
 
 
 if env.list("ALLOWED_HOSTS", default=[]):
     ALLOWED_HOSTS: List[str] = env.list("ALLOWED_HOSTS")
 
+LOGIN_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "index"
+
+
+SOCIAL_PROVIDERS = env.list("SOCIAL_PROVIDERS", default=[])
+
+SOCIALACCOUNT_PROVIDERS = env.json("SOCIALACCOUNT_PROVIDERS", default={})
+
+SITE_ID = 1
 
 # Application definition
 
@@ -49,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
+    "django.contrib.sites",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -62,6 +74,27 @@ ADMINS = getaddresses(env.list("ADMINS", default=[]))
 
 MANAGERS = getaddresses(env.list("MANAGERS", default=[]))
 
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+if SOCIALACCOUNT_PROVIDERS or 1:
+
+    INSTALLED_APPS.extend(
+        [
+            "allauth",
+            "allauth.account",
+            "allauth.socialaccount",
+            "allauth.socialaccount.providers.openid_connect",
+        ]
+    )
+    AUTHENTICATION_BACKENDS.append(
+        "allauth.account.auth_backends.AuthenticationBackend",
+    )
+    SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+    ACCOUNT_LOGOUT_REDIRECT_URL = "index"
+    ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = "index"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -104,9 +137,10 @@ vars().update(EMAIL_CONFIG)
 
 EMAIL_SUBJECT_PREFIX = env("EMAIL_SUBJECT_PREFIX", default="")
 
-
 DATABASES = {
-    "default": env.db_url("DATABASE_URL", default="sqlite://db.sqlite3")
+    "default": env.db_url(
+        "DATABASE_URL", default="sqlite:///%s/db.sqlite3" % BASE_DIR
+    )
 }
 
 CACHES = {"default": env.cache(default="dummycache://")}

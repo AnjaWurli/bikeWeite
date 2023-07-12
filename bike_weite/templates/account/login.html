@@ -1,0 +1,37 @@
+{% extends "admin/login.html" %}
+
+{% load account socialaccount %}
+
+{% block content %}
+
+{% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>Please sign in with one of your existing third party accounts:</p>
+
+<div class="socialaccount_ballot">
+
+  <ul class="socialaccount_providers">
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+  </ul>
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+<p>or (if possible) directly enter your login credentials</p>
+
+{% endif %}
+
+<form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <div class="submit-row">
+    <input type="submit" value="Log in">
+  </div>
+</form>
+
+{% endblock %}

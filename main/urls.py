@@ -25,3 +25,6 @@ urlpatterns = [
 ] + static(  # type: ignore
     settings.STATIC_URL, document_root=settings.STATIC_ROOT
 )
+
+if settings.SOCIALACCOUNT_PROVIDERS or 1:
+    urlpatterns.append(path("accounts/", include("allauth.urls")))
