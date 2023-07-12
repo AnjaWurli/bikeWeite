@@ -2,72 +2,284 @@
 //import TheWelcome from '../components/TheWelcome.vue'
 import { ref } from 'vue'
 
-const y = ref('')
-const x = ref('0')
+const addr = ref('')
+const dist = ref('0')
+
+let loading = ref(false)
+
+async function submit(dist, addr) {
+  if (dist > 0 && addr.length > 0) {
+    loading.value = true
+    let address = addr.split(' ').join('%20')
+
+    const response = await fetch(
+      'http://127.0.0.1:8000/map/?address=' + address + '&distance=' + dist
+    )
+    console.log(response)
+
+    loading.value = false
+  }
+}
 </script>
 
 <template>
   <main class="main">
-    <form class="form" method="get" action="http://127.0.0.1:8000/map/">
-      <label for="address">Address: {{ y }} </label>
-      <input type="text" name="address" id="address" v-model="y" />
+    <form class="form" @submit.prevent="submit(dist, addr)">
+      <label for="address">Address: {{}} </label>
+      <input type="text" name="address" id="address" v-model="addr" />
 
-      <label for="distance">Distance: {{ x }} km</label>
+      <label for="distance">Distance: {{ dist }} km</label>
       <input
         type="range"
         name="distance"
         id="distance"
+        class="slider"
         min="0"
-        max="100"
-        list="markers"
-        v-model="x"
+        max="50"
+        step="5"
+        v-model="dist"
       />
-      <datalist id="markers">
-        <option value="0"></option>
-        <option value="25"></option>
-        <option value="50"></option>
-        <option value="75"></option>
-        <option value="100"></option>
-      </datalist>
-      <button>Submit</button>
+      <button :disabled="!(dist > 0 && addr.length > 0) || loading">Submit</button>
+      <div v-show="loading" class="lds-roller">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </form>
   </main>
 </template>
 
 <style scoped>
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-#distance {
-  color: var(--color-heading);
-}
-
-#address {
-  appearance: none;
-  border-radius: 2rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--color-text);
-}
-
-#adress:focus-within {
-  background-color: var(--color-heading);
-}
-
-.form button {
-  background-color: var(--color-heading);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 20rem;
-  font-family: inherit;
-}
-
 .main {
   height: 80vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 50%;
+}
+@media (min-width: 1024px) {
+  .form {
+    width: 100%;
+  }
+}
+/* Text Input *********************/
+#address {
+  box-shadow: none;
+  border-radius: 2rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+
+#address:focus {
+  outline-color: var(--color-heading);
+}
+
+/* Range Slider *********************/
+#distance {
+  width: 100%;
+  _-webkit-appearance: none;
+  background: transparent;
+  opacity: 0.8;
+  accent-color: var(--color-accent);
+}
+#distance:focus {
+  opacity: 1;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  /* Webkit/Blink */
+  -webkit-appearance: none;
+  cursor: pointer;
+  margin-top: -12px;
+}
+
+.slider::-moz-range-thumb {
+  /* Firefox */
+  cursor: pointer;
+  margin-top: -12px;
+}
+.slider::-moz-range-thumb {
+  /* IE */
+  cursor: pointer;
+  margin-top: -12px;
+}
+
+#distance::-webkit-slider-runnable-track {
+  background: linear-gradient(
+    90deg,
+    rgba(158, 158, 158) 7.5%,
+    rgba(255, 255, 255) 7.5% 17.5%,
+    rgba(158, 158, 158) 17.5% 32.5%,
+    rgba(255, 255, 255) 32.5% 42.5%,
+    rgba(158, 158, 158) 42.5% 57.5%,
+    rgba(255, 255, 255) 57.5% 67.5%,
+    rgba(158, 158, 158) 67.5% 82.5%,
+    rgba(255, 255, 255) 82.5% 92.5%,
+    rgba(158, 158, 158) 92.5% 100%
+  );
+  border: 6px solid rgba(158, 158, 158);
+  height: 1rem;
+  cursor: pointer;
+}
+#distance::-moz-range-track {
+  background: linear-gradient(
+    90deg,
+    rgba(158, 158, 158) 7.5%,
+    rgba(255, 255, 255) 7.5% 17.5%,
+    rgba(158, 158, 158) 17.5% 32.5%,
+    rgba(255, 255, 255) 32.5% 42.5%,
+    rgba(158, 158, 158) 42.5% 57.5%,
+    rgba(255, 255, 255) 57.5% 67.5%,
+    rgba(158, 158, 158) 67.5% 82.5%,
+    rgba(255, 255, 255) 82.5% 92.5%,
+    rgba(158, 158, 158) 92.5% 100%
+  );
+  border: 6px solid rgba(158, 158, 158);
+  height: 1rem;
+  cursor: pointer;
+}
+#distance::-ms-track {
+  background: linear-gradient(
+    90deg,
+    rgba(158, 158, 158) 7.5%,
+    rgba(255, 255, 255) 7.5% 17.5%,
+    rgba(158, 158, 158) 17.5% 32.5%,
+    rgba(255, 255, 255) 32.5% 42.5%,
+    rgba(158, 158, 158) 42.5% 57.5%,
+    rgba(255, 255, 255) 57.5% 67.5%,
+    rgba(158, 158, 158) 67.5% 82.5%,
+    rgba(255, 255, 255) 82.5% 92.5%,
+    rgba(158, 158, 158) 92.5% 100%
+  );
+  border: 6px solid rgba(158, 158, 158);
+  height: 1rem;
+  cursor: pointer;
+}
+/* Submit Button *********************/
+.form button {
+  background-color: var(--color-accent);
+  opacity: 0.9;
+  color: var(--color-background-soft);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20rem;
+  font-family: inherit;
+  cursor: pointer;
+  width: 50%;
+  margin: auto;
+  margin-block: 2rem;
+
+  transition: opacity 0.2s ease-in-out, translate 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form button:hover {
+  opacity: 1;
+  translate: 0 -10%;
+  box-shadow: 0px 5px 20px var(--color-text);
+}
+.form button:disabled {
+  background-color: var(--color-accent-trans);
+  cursor: default;
+}
+
+/* Loading *********************/
+/* found here: https://loading.io/css/ */
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  margin: auto;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: ' ';
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-text);
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
