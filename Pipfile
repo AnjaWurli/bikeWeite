@@ -24,3 +24,6 @@ manage = "python manage.py"
 
 [allauth]
 django-allauth = "*"
+
+[postgres]
+psycopg2-binary = "*"
