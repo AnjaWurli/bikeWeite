@@ -100,7 +100,7 @@ def get_map(request):
     # make the isochrone polygons
     isochrone_polys = make_iso_polys(G, edge_buff=25, node_buff=0, infill=True)
     gdf = gpd.GeoDataFrame(geometry=isochrone_polys, crs=graph_nodes.crs)
-    gdf["within distance to %s [m]"] = distances[::-1]
+    gdf["within distance to %s [m]" % place] = distances[::-1]
 
     m = gdf.explore(color=iso_colors, style_kwds=dict(fillOpacity=0.2))
     folium.Marker(point, popup="<b>%s</b>" % place).add_to(m)
