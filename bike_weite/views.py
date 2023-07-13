@@ -20,13 +20,17 @@ def get_map(request):
     from shapely.geometry import Point
     from shapely.geometry import Polygon
 
+    ox.settings.cache_folder = osp.join(tempfile.gettempdir(), "osmnx_cache")
+
     place = request.GET.get("address", "Geesthacht, Germany")
     network_type = "drive"
     # rc[:]["network_type"] = network_type
     distance = float(request.GET.get("distance")) * 1000
     distances = np.linspace(0, distance, 6)[1:]
 
-    G = ox.graph_from_place(place, network_type=network_type)
+    G = ox.graph_from_place(
+        place, network_type=network_type, buffer_dist=max(20000, distance)
+    )
     gdf_nodes = ox.graph_to_gdfs(G, edges=False)
 
     x, y = gdf_nodes["geometry"].unary_union.centroid.xy
@@ -92,7 +96,5 @@ def get_map(request):
     #     m.save(mapfile)
     #     with open(mapfile) as f:
     #         html = f.read()
-
-
 
     return HttpResponse(html)
