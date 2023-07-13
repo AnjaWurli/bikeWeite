@@ -34,7 +34,7 @@ def get_map(request):
 
     point = ox.geocoder.geocode(place)
 
-    network_type = "drive"
+    network_type = "bike"
     # rc[:]["network_type"] = network_type
     distance = float(request.GET.get("distance"))
 
