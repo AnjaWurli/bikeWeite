@@ -2,15 +2,15 @@
 //import TheWelcome from '../components/TheWelcome.vue'
 import { ref } from 'vue'
 
-const addr = ref('')
-const dist = ref('0')
+const addr = ref<string>('')
+const dist = ref<number>(0)
 
 const loading = ref(false)
 const loaded = ref(false)
 
 const address = ref('')
 
-async function submit(dist, addr) {
+async function submit(dist: number, addr: string) {
   if (dist > 0 && addr.length > 0) {
     loading.value = true
     console.log(address)
