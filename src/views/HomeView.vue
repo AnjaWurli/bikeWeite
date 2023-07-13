@@ -5,20 +5,31 @@ import { ref } from 'vue'
 const addr = ref('')
 const dist = ref('0')
 
-let loading = ref(false)
+const loading = ref(false)
+const loaded = ref(false)
+
+const address = ref('')
 
 async function submit(dist, addr) {
   if (dist > 0 && addr.length > 0) {
     loading.value = true
-    let address = addr.split(' ').join('%20')
+    address.value = 'https://en.wikipedia.org/wiki/Avocado'
+    //'http://127.0.0.1:8000/map/?address=' + addr.split(' ').join('%20') + '&distance=' + dist
+    //encodeURIComponent(addr)
+    console.log(address)
 
     const response = await fetch(
-      'http://127.0.0.1:8000/map/?address=' + address + '&distance=' + dist
+      'http://127.0.0.1:8000/map/?address=Altenburg,%20Germany&distance=2'
     )
     console.log(response)
-
-    loading.value = false
+    if (response.ok) {
+      loading.value = false
+      loaded.value = true
+    }
   }
+}
+function onLoad() {
+  console.log('iframe loaded')
 }
 </script>
 
@@ -39,7 +50,7 @@ async function submit(dist, addr) {
         step="5"
         v-model="dist"
       />
-      <button :disabled="!(dist > 0 && addr.length > 0) || loading">Submit</button>
+      <button :disabled="!(dist > 0 && addr.length > 0)">Submit</button>
       <div v-show="loading" class="lds-roller">
         <div></div>
         <div></div>
@@ -51,6 +62,16 @@ async function submit(dist, addr) {
         <div></div>
       </div>
     </form>
+    <iframe
+      v-show="loaded"
+      :src="address"
+      referrerpolicy="same-origin"
+      name="map"
+      @load="onLoad"
+      width="100%"
+      height="100%"
+    >
+    </iframe>
   </main>
 </template>
 
@@ -59,6 +80,7 @@ async function submit(dist, addr) {
   height: 80vh;
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -89,7 +111,6 @@ async function submit(dist, addr) {
 /* Range Slider *********************/
 #distance {
   width: 100%;
-  _-webkit-appearance: none;
   background: transparent;
   opacity: 0.8;
   accent-color: var(--color-accent);
@@ -101,7 +122,6 @@ async function submit(dist, addr) {
 
 .slider::-webkit-slider-thumb {
   /* Webkit/Blink */
-  -webkit-appearance: none;
   cursor: pointer;
   margin-top: -12px;
 }
@@ -109,9 +129,14 @@ async function submit(dist, addr) {
 .slider::-moz-range-thumb {
   /* Firefox */
   cursor: pointer;
-  margin-top: -12px;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 100%;
+  border: none;
+  translate: 0% -30%;
+  background-color: var(--color-accent);
 }
-.slider::-moz-range-thumb {
+.slider::-ms-thumb {
   /* IE */
   cursor: pointer;
   margin-top: -12px;
@@ -131,7 +156,7 @@ async function submit(dist, addr) {
     rgba(158, 158, 158) 92.5% 100%
   );
   border: 6px solid rgba(158, 158, 158);
-  height: 1rem;
+  height: 16px;
   cursor: pointer;
 }
 #distance::-moz-range-track {
@@ -148,7 +173,8 @@ async function submit(dist, addr) {
     rgba(158, 158, 158) 92.5% 100%
   );
   border: 6px solid rgba(158, 158, 158);
-  height: 1rem;
+  box-sizing: border-box;
+  height: 16px;
   cursor: pointer;
 }
 #distance::-ms-track {
@@ -165,7 +191,7 @@ async function submit(dist, addr) {
     rgba(158, 158, 158) 92.5% 100%
   );
   border: 6px solid rgba(158, 158, 158);
-  height: 1rem;
+  height: 16px;
   cursor: pointer;
 }
 /* Submit Button *********************/
