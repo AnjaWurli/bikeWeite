@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.cache import cache_page
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def index(request):
     """Return the App"""
     return render(request, template_name="bike_weite/index.html")
 
 
+@login_required
 @cache_page(60 * 15)
 def get_map(request):
     """Get a map to visualize the distance"""
