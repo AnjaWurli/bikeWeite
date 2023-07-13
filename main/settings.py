@@ -128,6 +128,7 @@ WSGI_APPLICATION = "main.wsgi.application"
 
 # Email settings
 SERVER_EMAIL = env("SERVER_EMAIL", default="no-reply@example.com")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=SERVER_EMAIL)
 
 EMAIL_CONFIG = env.email(
     "EMAIL_URL", default="consolemail://user:password@localhost:25"
