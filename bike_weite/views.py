@@ -15,26 +15,36 @@ def get_map(request):
     import osmnx as ox
     import os.path as osp
     import tempfile
-    from branca.element import Figure
+    import hashlib
     from shapely.geometry import LineString
     from shapely.geometry import Point
     from shapely.geometry import Polygon
 
-    ox.settings.cache_folder = osp.join(tempfile.gettempdir(), "osmnx_cache")
+    cache_folder = osp.join(tempfile.gettempdir(), "osmnx_cache")
+
+    ox.settings.cache_folder = cache_folder
 
     place = request.GET.get("address", "Geesthacht, Germany")
+
+    point = ox.geocoder.geocode(place)
+
     network_type = "drive"
     # rc[:]["network_type"] = network_type
     distance = float(request.GET.get("distance")) * 1000
     distances = np.linspace(0, distance, 6)[1:]
 
-    G = ox.graph_from_place(
-        place, network_type=network_type, buffer_dist=max(20000, distance)
-    )
-    gdf_nodes = ox.graph_to_gdfs(G, edges=False)
+    md5 = hashlib.md5(place.encode("utf-8")).hexdigest()
+    graph_file = osp.join(cache_folder, md5 + ".graphml")
 
-    x, y = gdf_nodes["geometry"].unary_union.centroid.xy
-    center_node = ox.distance.nearest_nodes(G, x[0], y[0])
+    if not osp.exists(graph_file):
+        G = ox.graph_from_point(
+            point, network_type=network_type, dist=max(20000, distance)
+        )
+        ox.save_graphml(G, graph_file)
+    else:
+        G = ox.load_graphml(graph_file)
+
+    center_node = ox.distance.nearest_nodes(G, point[1], point[0])
     G = ox.project_graph(G)
     graph_nodes = ox.graph_to_gdfs(G, edges=False)
 
