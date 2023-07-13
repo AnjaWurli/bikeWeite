@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
 
-# Create your views here.
+
 def index(request):
     """Return the App"""
     return render(request, template_name="bike_weite/index.html")
 
 
+@cache_page(60 * 15)
 def get_map(request):
     """Get a map to visualize the distance"""
     import geopandas as gpd
@@ -15,6 +17,7 @@ def get_map(request):
     import osmnx as ox
     import os.path as osp
     import tempfile
+    import folium
     import hashlib
     from shapely.geometry import LineString
     from shapely.geometry import Point
@@ -94,17 +97,11 @@ def get_map(request):
     # make the isochrone polygons
     isochrone_polys = make_iso_polys(G, edge_buff=25, node_buff=0, infill=True)
     gdf = gpd.GeoDataFrame(geometry=isochrone_polys, crs=graph_nodes.crs)
+    gdf["within distance to %s [m]"] = distances[::-1]
 
-    m = gdf.explore(
-        color=iso_colors, style_kwds=dict(fillOpacity=0.2), tooltip=False
-    )
+    m = gdf.explore(color=iso_colors, style_kwds=dict(fillOpacity=0.2))
+    folium.Marker(point, popup="<b>%s</b>" % place).add_to(m)
     m.render()
     html = m._repr_html_()
-
-    # with tempfile.TemporaryDirectory() as tmpdir:
-    #     mapfile = osp.join(tmpdir, "map.html")
-    #     m.save(mapfile)
-    #     with open(mapfile) as f:
-    #         html = f.read()
 
     return HttpResponse(html)
