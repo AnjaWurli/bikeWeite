@@ -30,3 +30,4 @@ psycopg2-binary = "*"
 
 [deploy]
 gunicorn = "*"
+django-redis = "*"
