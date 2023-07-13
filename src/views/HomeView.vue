@@ -13,17 +13,15 @@ const address = ref('')
 async function submit(dist, addr) {
   if (dist > 0 && addr.length > 0) {
     loading.value = true
-    address.value = 'https://en.wikipedia.org/wiki/Avocado'
-    //'http://127.0.0.1:8000/map/?address=' + addr.split(' ').join('%20') + '&distance=' + dist
-    //encodeURIComponent(addr)
     console.log(address)
 
-    const response = await fetch(
-      'http://127.0.0.1:8000/map/?address=Altenburg,%20Germany&distance=2'
-    )
+    let uri = `/map/?address=${encodeURIComponent(addr)}&distance=${dist}`
+
+    const response = await fetch(uri)
     console.log(response)
     if (response.ok) {
       loading.value = false
+      address.value = uri
       loaded.value = true
     }
   }
