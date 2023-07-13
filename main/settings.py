@@ -72,6 +72,8 @@ ADMINS = getaddresses(env.list("ADMINS", default=[]))
 
 MANAGERS = getaddresses(env.list("MANAGERS", default=[]))
 
+X_FRAME_OPTIONS = "SAMEORIGIN"
+
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
