@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.cache import cache_page
 from django.contrib.auth.decorators import login_required
 
@@ -36,7 +36,11 @@ def get_map(request):
 
     network_type = "drive"
     # rc[:]["network_type"] = network_type
-    distance = float(request.GET.get("distance")) * 1000
+    distance = float(request.GET.get("distance"))
+
+    if distance > 30:
+        return HttpResponseBadRequest()
+    distance *= 1000
     distances = np.linspace(0, distance, 6)[1:]
 
     md5 = hashlib.md5(place.encode("utf-8")).hexdigest()
@@ -100,7 +104,7 @@ def get_map(request):
     # make the isochrone polygons
     isochrone_polys = make_iso_polys(G, edge_buff=25, node_buff=0, infill=True)
     gdf = gpd.GeoDataFrame(geometry=isochrone_polys, crs=graph_nodes.crs)
-    gdf["within distance to %s [m]" % place] = distances[::-1]
+    gdf["within distance to %s (in km)" % place] = distances[::-1] / 1000.
 
     m = gdf.explore(color=iso_colors, style_kwds=dict(fillOpacity=0.2))
     folium.Marker(point, popup="<b>%s</b>" % place).add_to(m)

@@ -44,7 +44,7 @@ function onLoad() {
         id="distance"
         class="slider"
         min="0"
-        max="50"
+        max="30"
         step="5"
         v-model="dist"
       />
