@@ -10,7 +10,7 @@ def index(request):
     return render(request, template_name="bike_weite/index.html")
 
 
-@cache_page(60 * 15)
+@cache_page(60 * 15 * 120)
 @login_required
 def get_map(request):
     """Get a map to visualize the distance"""
