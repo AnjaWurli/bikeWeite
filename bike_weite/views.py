@@ -1,12 +1,17 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.cache import cache_page
+from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+@login_required
 def index(request):
     """Return the App"""
     return render(request, template_name="bike_weite/index.html")
 
 
+@cache_page(60 * 15)
+@login_required
 def get_map(request):
     """Get a map to visualize the distance"""
     import geopandas as gpd
@@ -15,22 +20,41 @@ def get_map(request):
     import osmnx as ox
     import os.path as osp
     import tempfile
-    from branca.element import Figure
+    import folium
+    import hashlib
     from shapely.geometry import LineString
     from shapely.geometry import Point
     from shapely.geometry import Polygon
 
+    cache_folder = osp.join(tempfile.gettempdir(), "osmnx_cache")
+
+    ox.settings.cache_folder = cache_folder
+
     place = request.GET.get("address", "Geesthacht, Germany")
-    network_type = "drive"
+
+    point = ox.geocoder.geocode(place)
+
+    network_type = "bike"
     # rc[:]["network_type"] = network_type
-    distance = float(request.GET.get("distance")) * 1000
+    distance = float(request.GET.get("distance"))
+
+    if distance > 30:
+        return HttpResponseBadRequest()
+    distance *= 1000
     distances = np.linspace(0, distance, 6)[1:]
 
-    G = ox.graph_from_place(place, network_type=network_type)
-    gdf_nodes = ox.graph_to_gdfs(G, edges=False)
+    md5 = hashlib.md5(place.encode("utf-8")).hexdigest()
+    graph_file = osp.join(cache_folder, md5 + ".graphml")
 
-    x, y = gdf_nodes["geometry"].unary_union.centroid.xy
-    center_node = ox.distance.nearest_nodes(G, x[0], y[0])
+    if not osp.exists(graph_file):
+        G = ox.graph_from_point(
+            point, network_type=network_type, dist=max(20000, distance)
+        )
+        ox.save_graphml(G, graph_file)
+    else:
+        G = ox.load_graphml(graph_file)
+
+    center_node = ox.distance.nearest_nodes(G, point[1], point[0])
     G = ox.project_graph(G)
     graph_nodes = ox.graph_to_gdfs(G, edges=False)
 
@@ -80,19 +104,11 @@ def get_map(request):
     # make the isochrone polygons
     isochrone_polys = make_iso_polys(G, edge_buff=25, node_buff=0, infill=True)
     gdf = gpd.GeoDataFrame(geometry=isochrone_polys, crs=graph_nodes.crs)
+    gdf["within distance to %s (in km)" % place] = distances[::-1] / 1000.
 
-    m = gdf.explore(
-        color=iso_colors, style_kwds=dict(fillOpacity=0.2), tooltip=False
-    )
+    m = gdf.explore(color=iso_colors, style_kwds=dict(fillOpacity=0.2))
+    folium.Marker(point, popup="<b>%s</b>" % place).add_to(m)
     m.render()
     html = m._repr_html_()
-
-    # with tempfile.TemporaryDirectory() as tmpdir:
-    #     mapfile = osp.join(tmpdir, "map.html")
-    #     m.save(mapfile)
-    #     with open(mapfile) as f:
-    #         html = f.read()
-
-
 
     return HttpResponse(html)

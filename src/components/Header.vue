@@ -1,12 +1,22 @@
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="1280.000000pt" height="713.000000pt" viewBox="0 0 1280.000000 713.000000"
- preserveAspectRatio="xMidYMid meet">
-<metadata>
-Created by potrace 1.15, written by Peter Selinger 2001-2017
-</metadata>
-<g transform="translate(0.000000,713.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M7482 7120 c-125 -10 -183 -35 -226 -96 -41 -61 -46 -121 -12 -178
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+</script>
+
+<template>
+  <div class="wrapper">
+    <svg
+      version="1.0"
+      xmlns="http://www.w3.org/2000/svg"
+      width="10vw"
+      height="10vh"
+      viewBox="0 0 1280.000000 713.000000"
+      preserveAspectRatio="xMidYMid meet"
+      id="logo"
+    >
+      <metadata>Created by potrace 1.15, written by Peter Selinger 2001-2017</metadata>
+      <g transform="translate(0.000000,713.000000) scale(0.100000,-0.100000)" stroke="none">
+        <path
+          d="M7482 7120 c-125 -10 -183 -35 -226 -96 -41 -61 -46 -121 -12 -178
 34 -58 105 -119 155 -135 68 -20 233 -30 496 -31 281 0 460 -12 521 -35 39
 -15 45 -23 87 -109 55 -113 177 -419 184 -462 l5 -31 -88 -7 c-214 -16 -1159
 -26 -2570 -26 l-1520 0 -87 178 c-48 97 -87 182 -87 188 0 15 63 27 405 73
@@ -54,6 +64,91 @@ fill="#000000" stroke="none">
 261 162 573 261 920 293 81 7 350 -4 459 -19z m1132 -590 c150 -171 244 -329
 308 -520 29 -89 63 -242 75 -341 l6 -51 -407 -7 c-225 -3 -550 -9 -723 -12
 l-314 -7 15 24 c8 13 181 288 384 611 l368 587 102 -95 c56 -52 139 -137 186
--189z"/>
-</g>
-</svg>
+-189z"
+        />
+      </g>
+    </svg>
+
+    <h1>bike Weite</h1>
+
+    <nav>
+      <RouterLink to="/">Home</RouterLink>
+      <a href="https://github.com/AnjaWurli/bikeWeiter" target="_blank">
+        <svg
+          height="32"
+          aria-hidden="true"
+          viewBox="0 0 16 16"
+          version="1.1"
+          width="32"
+          data-view-component="true"
+          class="github-icon"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+          ></path>
+        </svg>
+      </a>
+    </nav>
+  </div>
+</template>
+
+<style scoped>
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#logo {
+  fill: var(--color-accent);
+}
+.github-icon {
+  height: 16px;
+  aspect-ratio: 1;
+  fill: var(--color-accent-trans);
+}
+
+nav {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
+
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
+
+nav a {
+  display: inline-block;
+  padding: 0 1rem;
+  border-left: 1px solid var(--color-border);
+}
+
+nav a:first-of-type {
+  border: 0;
+}
+
+@media (min-width: 1024px) {
+  .wrapper {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  nav {
+    text-align: left;
+    margin-left: -1rem;
+    font-size: 1rem;
+
+    padding: 1rem 0;
+    margin-top: 1rem;
+  }
+  .github-icon {
+    height: 20px;
+  }
+}
+</style>
