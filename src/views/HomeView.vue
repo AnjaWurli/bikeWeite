@@ -2,28 +2,26 @@
 //import TheWelcome from '../components/TheWelcome.vue'
 import { ref } from 'vue'
 
-const addr = ref('')
-const dist = ref('0')
+const addr = ref<string>('')
+const dist = ref<number>(0)
 
 const loading = ref(false)
 const loaded = ref(false)
 
 const address = ref('')
 
-async function submit(dist, addr) {
+async function submit(dist: number, addr: string) {
   if (dist > 0 && addr.length > 0) {
     loading.value = true
-    address.value = 'https://en.wikipedia.org/wiki/Avocado'
-    //'http://127.0.0.1:8000/map/?address=' + addr.split(' ').join('%20') + '&distance=' + dist
-    //encodeURIComponent(addr)
     console.log(address)
 
-    const response = await fetch(
-      'http://127.0.0.1:8000/map/?address=Altenburg,%20Germany&distance=2'
-    )
+    let uri = `/map/?address=${encodeURIComponent(addr)}&distance=${dist}`
+
+    const response = await fetch(uri)
     console.log(response)
     if (response.ok) {
       loading.value = false
+      address.value = uri
       loaded.value = true
     }
   }
@@ -46,7 +44,7 @@ function onLoad() {
         id="distance"
         class="slider"
         min="0"
-        max="50"
+        max="30"
         step="5"
         v-model="dist"
       />
